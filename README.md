@@ -4,7 +4,7 @@
 
 ##配图：
 
-![](https://github.com/qqcc1388/TYPageView/blob/master/source/QQ20170522-131618.gif)
+![](https://github.com/qqcc1388/TYPageView/blob/master/source/ezgif.com-video-to-gif.gif)
 
 ##使用方法：
 ```
