@@ -20,13 +20,13 @@ class TYPageView: UIView {
     fileprivate var isForbideScroll:Bool = false
     fileprivate var currentIndex:Int = 0
     
-    fileprivate lazy var titleView: TYPageTitleView = {[unowned self] in
+    fileprivate lazy var titleView: TYPageTitleView = {
         let titleView:TYPageTitleView = TYPageTitleView(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.style.labelHeight), titles: self.titles, style: self.style)
         titleView.delegate = self
         return titleView
     }()
     
-    fileprivate lazy var collectionView: UICollectionView = {[unowned self] in
+    fileprivate lazy var collectionView: UICollectionView = {
         
         let layout:UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal

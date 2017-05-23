@@ -20,12 +20,12 @@ class TYPageTitleView: UIView {
     
     var titles:[String]
     var titleLabels:[UILabel] = [UILabel]()
-    lazy var scrollView:UIScrollView = {[unowned self] in
+    lazy var scrollView:UIScrollView = {
         let scroll:UIScrollView = UIScrollView(frame: self.bounds)
         scroll.showsHorizontalScrollIndicator = false
         return scroll
     }()
-    lazy var lineView:UIView = {[unowned self] in
+    lazy var lineView:UIView = {
         let line = UIView()
         line.backgroundColor = self.style.bottomLineColor
         line.frame.size.height = 2
