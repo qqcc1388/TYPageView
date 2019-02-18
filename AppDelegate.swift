@@ -1,9 +1,9 @@
 //
 //  AppDelegate.swift
-//  TYPageViewDemo1
+//  PageViewDemo
 //
-//  Created by Tiny on 2017/5/18.
-//  Copyright © 2017年 LOVEGO. All rights reserved.
+//  Created by Tiny on 2019/2/13.
+//  Copyright © 2019年 hxq. All rights reserved.
 //
 
 import UIKit
@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         return true
     }
