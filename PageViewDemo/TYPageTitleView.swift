@@ -188,7 +188,7 @@ extension TYPageTitleView{
         let nextLabel = titleLabels[nextIndex]
         
         //设置字体颜色渐变
-        if style.isShowLabelScale {
+        if style.isShowColorScale {
             let selectRGB = getGRBValue(style.selectColor)
             let normalRGB = getGRBValue(style.normalColor)
             let deltaRGB = (selectRGB.0 - normalRGB.0, selectRGB.1 - normalRGB.1, selectRGB.2 - normalRGB.2)
@@ -196,60 +196,57 @@ extension TYPageTitleView{
             nextLabel.textColor = UIColor(red: (normalRGB.0 + deltaRGB.0 * progress), green: normalRGB.1 + deltaRGB.1 * progress, blue: normalRGB.2 + deltaRGB.2 * progress, alpha: 1)
         }
         
-        //设置lineView宽度的渐变
+        //设置lineView的渐变
         if style.isShowBottomLine {
-            //1.位置的变化
             var deltaX:CGFloat = 0
             var deltaW:CGFloat = 0
 
-//            if style.bottomAlginLabel {
-//                deltaX = nextLabel.center.x - currentLabel.center.x
-//            }else{
-//                deltaX = nextLabel.center.x - currentLabel.center.x
-//            }
-//            lineView.center.x = currentLabel.center.x + deltaX*progress
-            
-            if style.isShowBottomLine{
-                let currentLabelRealWidth = (style.bottomAlginLabel ?  currentLabel.width : widthForContent(currentLabel))
-                let currentDeltaW = (style.bottomAlginLabel ? 0 : (currentLabel.width - currentLabelRealWidth)/2.0)
-                let nextLabelRealWidth =  (style.bottomAlginLabel ?  nextLabel.width : widthForContent(nextLabel))
-                let nextDeltaW = (style.bottomAlginLabel ? 0 : (nextLabel.width - nextLabelRealWidth)/2.0)
-                if progress <= 0.5{  //宽度变宽
-                    if direction == .right{
+            if style.isShowBottomLine{  //显示底部划线
+                
+                if style.moveAnimation == .fastScroll{  //快速滑动  类似微博
+                    let currentLabelRealWidth = (style.bottomAlginLabel ?  currentLabel.width : widthForContent(currentLabel))
+                    let currentDeltaW = (style.bottomAlginLabel ? 0 : (currentLabel.width - currentLabelRealWidth)/2.0)
+                    let nextLabelRealWidth =  (style.bottomAlginLabel ?  nextLabel.width : widthForContent(nextLabel))
+                    let nextDeltaW = (style.bottomAlginLabel ? 0 : (nextLabel.width - nextLabelRealWidth)/2.0)
+                    
+                    if progress <= 0.5{  //宽度变宽
+                        if direction == .right{
+                            //太长了Xcode无法识别出来
+                            let x = (currentDeltaW + style.labelMargin + nextDeltaW + nextLabelRealWidth)*(progress)*2
+                            deltaX =  currentLabel.x + currentDeltaW - x
+                        }else{
+                            deltaX = currentLabel.x + currentDeltaW
+                        }
+                        deltaW = currentLabelRealWidth + (nextLabel.width - nextDeltaW + style.labelMargin + currentDeltaW)*(progress)*2
+                        
+                    }else{  // x轴变大
+                        if direction == .right{
+                            deltaX = nextLabel.x + nextDeltaW
+                        }else{
+                            //太长了Xcode无法识别出来
+                            let x = (currentLabel.width - currentDeltaW + nextDeltaW + style.labelMargin)*(progress - 0.5)*2
+                            deltaX = currentLabel.x + currentDeltaW + x
+                        }
                         //太长了Xcode无法识别出来
-                        let x = (currentDeltaW + style.labelMargin + nextDeltaW + nextLabelRealWidth)*(progress)*2
-                        deltaX =  currentLabel.x + currentDeltaW - x
-                    }else{
-                        deltaX = currentLabel.x + currentDeltaW
+                        let w = (currentLabel.width - currentDeltaW + nextDeltaW + style.labelMargin)*(1-progress)*2
+                        deltaW = nextLabelRealWidth + w
                     }
-                    deltaW = currentLabelRealWidth + (nextLabel.width - nextDeltaW + style.labelMargin + currentDeltaW)*(progress)*2
-
-                }else{  // x轴变大
-                    if direction == .right{
-                        deltaX = nextLabel.x + nextDeltaW
+                    lineView.frame = CGRect(x: deltaX, y: lineView.y, width: deltaW, height: lineView.height)
+                }else{  //正常滑动
+                    deltaX = nextLabel.center.x - currentLabel.center.x
+                    lineView.center.x = currentLabel.center.x + deltaX*progress
+                    
+                    if style.bottomAlginLabel {
+                        deltaW = nextLabel.bounds.width - currentLabel.bounds.width
                     }else{
-                        //太长了Xcode无法识别出来
-                        let x = (currentLabel.width - currentDeltaW + nextDeltaW + style.labelMargin)*(progress - 0.5)*2
-                        deltaX = currentLabel.x + currentDeltaW + x
+                        deltaW = widthForContent(nextLabel) - widthForContent(currentLabel)
                     }
-                    //太长了Xcode无法识别出来
-                    let w = (currentLabel.width - currentDeltaW + nextDeltaW + style.labelMargin)*(1-progress)*2
-                    deltaW = nextLabelRealWidth + w
+                    lineView.frame.size.width = (style.bottomAlginLabel ? currentLabel.frame.size.width : widthForContent(currentLabel)) + deltaW*progress
                 }
-                lineView.frame = CGRect(x: deltaX, y: lineView.y, width: deltaW, height: lineView.height)
             }
-//            lineView.width = currentLabel.width + (nextLabel.width + style.labelMargin)*progress
-            
-            //2.宽度的变化
-//            var deltaW:CGFloat = 0
-//            if style.bottomAlginLabel {
-//                deltaW = nextLabel.bounds.width - currentLabel.bounds.width
-//            }else{
-//                deltaW = widthForContent(nextLabel) - widthForContent(currentLabel)
-//            }
-//            lineView.frame.size.width = (style.bottomAlginLabel ? currentLabel.frame.size.width : widthForContent(currentLabel)) + deltaW*progress
-            //设置字体大小的渐变
         }
+        
+        //设置字体大小渐变
     }
     
     /// 滚动结束 重试字体颜色 防止字体颜色出现异常

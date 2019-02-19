@@ -14,10 +14,14 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+//        let pageView = TYPageView(frame: view.bounds,
+//                                titles: ["推荐","热点推荐","视频","深圳推荐","推荐","热点","视频","深圳推荐","推荐","热点推荐","视频","深圳"],
+//                                childControllers: [TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController()],
+//                                parentController: self)
         let pageView = TYPageView(frame: view.bounds,
-                                titles: ["推荐","热点推荐","视频","深圳推荐","推荐","热点","视频","深圳推荐","推荐","热点推荐","视频","深圳"],
-                                childControllers: [TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController(),TestViewController()],
-                                parentController: self)
+                                  titles: ["推荐","热点推荐","视频"],
+                                  childControllers: [TestViewController(),TestViewController(),TestViewController()],
+                                  parentController: self)
         pageView.backgroundColor = UIColor.cyan
         view.addSubview(pageView)
     }

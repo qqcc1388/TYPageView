@@ -25,26 +25,24 @@ enum MoveDirection {
 enum MoveAnimation {
     case fastScroll   //快速移动  仿微博效果
     case scroll       //滚动  跟随
-    case endScroll    //结束后滚动 移动结束后开始滚动
 }
 
 class TYPageStyle {
     
-    var labelHeight:CGFloat = 44            //标签高度
+    var labelHeight:CGFloat = 44            //标签高度  
     var labelMargin:CGFloat = 20            //标签间隔
     var labelFont:CGFloat = 15              //标签字体大小
-    var labelLayout:LabelLayout = .scroll   //默认可以滚动
-    var labelCenterWidth: CGFloat = 50     //居中模式下label的默认宽度
+    var labelCenterWidth: CGFloat = 50      //居中模式下label的默认宽度
     
-    
-    var selectColor:UIColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1)  //字体颜色必须为rgb格式
-    var normalColor:UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)    //字体颜色必须为rgb格式
-    var isShowLabelScale:Bool = true        //是否显示文字动画
-    
-    var isShowBottomLine:Bool = true        //是否显示底部的线
+    var labelLayout:LabelLayout = .divide   //默认可以滚动
     var moveAnimation: MoveAnimation = .fastScroll  //底部线运动d动画
     
-    var bottomLineColor:UIColor = .red
+    var isShowBottomLine:Bool = true        //是否显示底部的线
+    var isShowColorScale:Bool = true        //是否显示文字颜色动画
     var bottomAlginLabel:Bool = true        //bottomline跟随文字标签宽度  默认跟随label的宽度 false跟随labelText的宽度
+
+    var selectColor:UIColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1)  //字体颜色必须为rgb格式 默认红色
+    var normalColor:UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)    //字体颜色必须为rgb格式  默认黑色
+    var bottomLineColor:UIColor = .red
 }
 
