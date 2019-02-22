@@ -85,7 +85,7 @@ extension TYPageTitleView{
             titleLabel.isUserInteractionEnabled = true
             titleLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(itemClick(_:))))
             //设置frame
-            textWidth = widthForContent(titleLabel)
+            textWidth = widthForContent(titleLabel,style.isShowFontScale ? style.labelSelFont : 0)
             if style.labelLayout == .divide{
                 labelWidth = (bounds.size.width - CGFloat(titles.count + 1) * margin) / CGFloat(titles.count)
             }else if style.labelLayout == .center{
@@ -95,6 +95,11 @@ extension TYPageTitleView{
             }
             
             if i == 0{
+                
+                if style.isShowFontScale{
+                    titleLabel.font = UIFont.systemFont(ofSize: style.labelSelFont)
+                }
+                
                 if style.labelLayout == .scroll {
                     x = margin*0.5
                 }else if style.labelLayout == .divide{
@@ -106,6 +111,8 @@ extension TYPageTitleView{
                 lineView.frame.origin.x = style.bottomAlginLabel ? x : x + (labelWidth - textWidth)/2.0
                 lineView.frame.size.width = style.bottomAlginLabel ? labelWidth : textWidth
                 titleLabel.textColor = style.selectColor
+                
+                //字体变大
                 
             }else{
                 if style.labelLayout == .scroll {
@@ -127,8 +134,8 @@ extension TYPageTitleView{
         scrollView.bringSubviewToFront(lineView)
     }
     
-    fileprivate func widthForContent(_ label:UILabel) -> CGFloat{
-        return ((label.text! as NSString).boundingRect(with: CGSize(width : CGFloat.greatestFiniteMagnitude, height: 0), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font:label.font], context: nil)).width
+    fileprivate func widthForContent(_ label:UILabel, _ fontSize: CGFloat = 0) -> CGFloat{
+        return ((label.text! as NSString).boundingRect(with: CGSize(width : CGFloat.greatestFiniteMagnitude, height: 0), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: fontSize > 0 ? UIFont.systemFont(ofSize: fontSize) : label.font], context: nil)).width
     }
 }
 
@@ -151,8 +158,17 @@ extension TYPageTitleView{
                 self.lineView.frame.origin.x = (selectLabel.frame.size.width - self.widthForContent(selectLabel))/CGFloat(2) + selectLabel.frame.minX
             }
             self.lineView.frame.size.width = self.style.bottomAlginLabel ? selectLabel.frame.size.width : self.widthForContent(selectLabel)
+
+            if self.style.isShowFontScale{  //font缩放
+                if selectLabel != preLabel {
+                    selectLabel.font = UIFont.systemFont(ofSize: self.style.labelSelFont)
+                    preLabel.font = UIFont.systemFont(ofSize: self.style.labelFont)
+                }
+            }else{
+
+            }
         }
-//
+
         if style.labelLayout == .scroll {
             
             if scrollView.contentSize.width <= bounds.size.width {
@@ -202,40 +218,36 @@ extension TYPageTitleView{
             var deltaW:CGFloat = 0
 
             if style.isShowBottomLine{  //显示底部划线
-                
+
                 if style.moveAnimation == .fastScroll{  //快速滑动  类似微博
                     let currentLabelRealWidth = (style.bottomAlginLabel ?  currentLabel.width : widthForContent(currentLabel))
                     let currentDeltaW = (style.bottomAlginLabel ? 0 : (currentLabel.width - currentLabelRealWidth)/2.0)
                     let nextLabelRealWidth =  (style.bottomAlginLabel ?  nextLabel.width : widthForContent(nextLabel))
                     let nextDeltaW = (style.bottomAlginLabel ? 0 : (nextLabel.width - nextLabelRealWidth)/2.0)
-                    
+                    let margin = style.labelMargin
+                    //以滚动0.5为一个滚动循环 超过0.5则恢复
                     if progress <= 0.5{  //宽度变宽
                         if direction == .right{
-                            //太长了Xcode无法识别出来
-                            let x = (currentDeltaW + style.labelMargin + nextDeltaW + nextLabelRealWidth)*(progress)*2
-                            deltaX =  currentLabel.x + currentDeltaW - x
+                            deltaX =  currentLabel.x - (margin + nextDeltaW + nextLabelRealWidth)*progress*2
                         }else{
                             deltaX = currentLabel.x + currentDeltaW
                         }
-                        deltaW = currentLabelRealWidth + (nextLabel.width - nextDeltaW + style.labelMargin + currentDeltaW)*(progress)*2
-                        
+                        deltaW = currentLabelRealWidth + (nextLabel.width - nextDeltaW + margin + currentDeltaW)*progress*2
+
                     }else{  // x轴变大
                         if direction == .right{
                             deltaX = nextLabel.x + nextDeltaW
                         }else{
-                            //太长了Xcode无法识别出来
-                            let x = (currentLabel.width - currentDeltaW + nextDeltaW + style.labelMargin)*(progress - 0.5)*2
-                            deltaX = currentLabel.x + currentDeltaW + x
+                            deltaX = currentLabel.x + (currentLabel.width + nextDeltaW + margin)*(progress - 0.5)*2
                         }
-                        //太长了Xcode无法识别出来
-                        let w = (currentLabel.width - currentDeltaW + nextDeltaW + style.labelMargin)*(1-progress)*2
-                        deltaW = nextLabelRealWidth + w
+                        deltaW = nextLabelRealWidth + (currentLabel.width - currentDeltaW + nextDeltaW + margin)*(1-progress)*2
                     }
                     lineView.frame = CGRect(x: deltaX, y: lineView.y, width: deltaW, height: lineView.height)
-                }else{  //正常滑动
+
+                }else{  //跟随动画
                     deltaX = nextLabel.center.x - currentLabel.center.x
                     lineView.center.x = currentLabel.center.x + deltaX*progress
-                    
+
                     if style.bottomAlginLabel {
                         deltaW = nextLabel.bounds.width - currentLabel.bounds.width
                     }else{
@@ -247,6 +259,15 @@ extension TYPageTitleView{
         }
         
         //设置字体大小渐变
+        if style.isShowFontScale {
+            let deltaSize = style.labelSelFont - style.labelFont
+            let currentSize = style.labelSelFont - deltaSize*progress
+            let nextSize = style.labelFont + deltaSize*progress
+            //目标字体 大小变化
+            currentLabel.font = UIFont.systemFont(ofSize: currentSize)
+            //下一个目标 大小变化
+            nextLabel.font = UIFont.systemFont(ofSize: nextSize)
+        }
     }
     
     /// 滚动结束 重试字体颜色 防止字体颜色出现异常

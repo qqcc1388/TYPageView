@@ -21,7 +21,7 @@ class TYPageView: UIView {
     
     //pageTitleView
     private lazy var pageTitleView: TYPageTitleView = {
-        let pageTitleView = TYPageTitleView(frame: CGRect(x: 0, y: IS_IPhoneX_Series ? 44 : 0, width: self.bounds.width, height: self.style.labelHeight), titles: self.titles, style: self.style)
+        let pageTitleView = TYPageTitleView(frame: CGRect(x: 0, y: IS_IPhoneX_Series ? 44 : 20, width: self.bounds.width, height: self.style.labelHeight), titles: self.titles, style: self.style)
         pageTitleView.backgroundColor = .gray
         pageTitleView.delegate = self
         return pageTitleView
@@ -32,11 +32,11 @@ class TYPageView: UIView {
         
         let layout:UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: self.bounds.size.width, height: self.bounds.size.height - self.style.labelHeight - (IS_IPhoneX_Series ? 44 : 0))
+        layout.itemSize = CGSize(width: self.bounds.size.width, height: self.bounds.size.height - self.style.labelHeight - (IS_IPhoneX_Series ? 44 : 20))
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         
-        let collection:UICollectionView = UICollectionView(frame: CGRect(x: 0, y: self.style.labelHeight + (IS_IPhoneX_Series ? 44 : 0), width: layout.itemSize.width, height: layout.itemSize.height), collectionViewLayout: layout)
+        let collection:UICollectionView = UICollectionView(frame: CGRect(x: 0, y: self.style.labelHeight + (IS_IPhoneX_Series ? 44 : 20), width: layout.itemSize.width, height: layout.itemSize.height), collectionViewLayout: layout)
         collection.dataSource = self
         collection.delegate = self
         collection.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "UICollectionViewCell")
@@ -101,6 +101,7 @@ extension TYPageView : UICollectionViewDelegate,UICollectionViewDataSource{
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         startOffsetX = scrollView.contentOffset.x
         isForbideScroll = false
+        print("MM")
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -114,7 +115,8 @@ extension TYPageView : UICollectionViewDelegate,UICollectionViewDataSource{
         let width = scrollView.bounds.size.width
         let count = Int(scrollView.contentSize.width/width)
         var direction: MoveDirection = .left
-        //判断是左移还是右移
+        
+        //判断是左移还是右移scrollViewWillBeginDecelerating
         if startOffsetX > scrollView.contentOffset.x{    //右移动
             nextIndex = currentIndex - 1
             if nextIndex < 0 {
@@ -134,10 +136,13 @@ extension TYPageView : UICollectionViewDelegate,UICollectionViewDataSource{
             direction = .left
         }
         pageTitleView.pageViewScroll(direction: direction,nextIndex: nextIndex, progress: progress)
+        
     }
     
+    //计算currentIndex
+    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        
+
         //拖动结束 计算index
         var index = Int(scrollView.contentOffset.x/scrollView.bounds.size.width)
         let width = scrollView.bounds.size.width
@@ -148,12 +153,12 @@ extension TYPageView : UICollectionViewDelegate,UICollectionViewDataSource{
         if index > count - 1 {
             index = count - 1
         }
-        //设置viewFrame
+//        设置viewFrame
         currentIndex = index
         //让pageView滚动起来
         pageTitleView.pageViewScrollEnd(pageIndex: index)
+        print("PPP")
     }
-    
 }
 
 extension TYPageView : TYPageTitleViewDelegate{
