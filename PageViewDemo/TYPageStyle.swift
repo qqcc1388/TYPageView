@@ -41,7 +41,7 @@ class TYPageStyle {
     var isShowBottomLine: Bool = true        //是否显示底部的线
     var isShowColorScale: Bool = true        //是否显示文字颜色动画
     var bottomAlginLabel: Bool = true        //bottomline跟随文字标签宽度  默认跟随label的宽度 false跟随labelText的宽度
-    var isShowFontScale: Bool = true        //是否显示font变化动画
+    var isShowFontScale: Bool = false        //是否显示font变化动画
 
     var selectColor: UIColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1)  //字体颜色必须为rgb格式 默认红色
     var normalColor: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)    //字体颜色必须为rgb格式  默认黑色

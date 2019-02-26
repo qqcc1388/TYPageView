@@ -99,9 +99,39 @@ extension TYPageView : UICollectionViewDelegate,UICollectionViewDataSource{
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        startOffsetX = scrollView.contentOffset.x
         isForbideScroll = false
-        print("MM")
+        // 快速滑动细节处理
+        
+        if Int(collectionView.contentOffset.x) % Int(collectionView.bounds.width) != 0  {
+            
+            let theNum = collectionView.contentOffset.x / collectionView.bounds.width
+            
+            let res = self.numFormat(num: Float(theNum ), format: "0")
+            //                print(" res",res)
+            collectionView.scrollToItem(at: IndexPath(item: Int(res)!, section: 0), at: .left, animated: false)
+            
+            startOffsetX = collectionView.bounds.width*CGFloat(Float(res)!)
+            var direction: MoveDirection = .left
+
+            //判断是左移还是右移
+            if startOffsetX > scrollView.contentOffset.x{ //右移动
+                direction = .right
+            }else{
+                direction = .left
+            }
+            pageTitleView.pageViewScroll(direction: direction, nextIndex: Int(res)!, progress: 1)
+            pageTitleView.pageViewScrollEnd(pageIndex: Int(res)!)
+
+        }else{
+            startOffsetX = scrollView.contentOffset.x
+        }
+    }
+    
+    //四舍五入
+    func numFormat(num: Float,format: String) -> String{
+        let formatter = NumberFormatter()
+        formatter.positiveFormat = format
+        return formatter.string(from: NSNumber(value: num))!
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -157,7 +187,6 @@ extension TYPageView : UICollectionViewDelegate,UICollectionViewDataSource{
         currentIndex = index
         //让pageView滚动起来
         pageTitleView.pageViewScrollEnd(pageIndex: index)
-        print("PPP")
     }
 }
 
